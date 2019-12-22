@@ -7,14 +7,16 @@
     <title>Глухие урочища &mdash; {% block title %}{% endblock %}</title>
 </head>
 <body>
-    <a href="/">Главная</a>
     {% if username %}  
         <h1>Привет, {{ username }}!</h1>  
         <p><a href="/logout">Выход</a>.</p>  
     {% else %}  
         <p><a href="/login">Вход для музыкантов и персонала</a></p>  
+        <p><a href="/register">Регистрация музыкантов и групп</a></p>
     {% endif %} 
 
+        <a href="/">Главная</a>
+        <a href="/admin">Админка</a>
 
     {% block content %}
     {% endblock %}
