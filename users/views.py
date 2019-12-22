@@ -19,7 +19,7 @@ class RegisterView(FormView):
 class CreateUserProfile(FormView):  
     form_class = forms.ProfileCreationForm  
     template_name = 'profile-create.html'  
-    success_url = reverse_lazy('festival:index')  
+    success_url = reverse_lazy('festival:request')  
 
     def dispatch(self, request, *args, **kwargs):  
         if self.request.user.is_anonymous:  

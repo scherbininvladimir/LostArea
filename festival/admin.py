@@ -9,7 +9,7 @@ class SceneAdmin(admin.ModelAdmin):
 
 @admin.register(Request)  
 class RequestAdmin(admin.ModelAdmin):  
-    pass
+    list_display = ('owner', 'name')
 
 
 @admin.register(Voice)  
@@ -19,7 +19,7 @@ class VoiceAdmin(admin.ModelAdmin):
 
 @admin.register(TimeSlot)  
 class TimeSlotAdmin(admin.ModelAdmin):  
-    pass
+    list_display = ('day', 'time')
 
 
 @admin.register(SceneSlot)  

@@ -9,7 +9,7 @@
 <body>
     {% if username %}  
         <h1>Привет, {{ username }}!</h1>  
-        <p><a href="/logout">Выход</a>.</p>  
+        <p><a href="/logout">Выход</a></p>  
     {% else %}  
         <p><a href="/login">Вход для музыкантов и персонала</a></p>  
         <p><a href="/register">Регистрация музыкантов и групп</a></p>
@@ -17,6 +17,7 @@
 
         <a href="/">Главная</a>
         <a href="/admin">Админка</a>
+        <p><a href="/request">Создать заявку</a></p>
 
     {% block content %}
     {% endblock %}
