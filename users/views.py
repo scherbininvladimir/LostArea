@@ -4,6 +4,7 @@ from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy
 from users import forms
 
+
 class RegisterView(FormView):  
   
     form_class = UserCreationForm  

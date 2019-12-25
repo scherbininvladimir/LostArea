@@ -122,5 +122,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = reverse_lazy('festival:index')
+LOGIN_REDIRECT_URL = reverse_lazy('festival:requests')
 LOGOUT_REDIRECT_URL = reverse_lazy('festival:index')
