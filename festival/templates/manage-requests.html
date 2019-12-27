@@ -3,31 +3,27 @@
 {% block title %}Заявка на участие{% endblock %}
 
 {% block content %}
-
 <table>
     <tr>
         <th>Название</th>
         <th>Формат</th>
         <th>Сцена</th>
-        <th>Временной слот</th>
     </tr>
-    {% for v in object_list %}
+    
+    {% for request in object_list %}
     <tr>
         <td>
-            {{ v.request.name }}
+            {{ request.request.name }}
+        </td>
+        <td>{{ request.request.get_format_display }}</td>
+        <td>
+            {{ request.request.scene }}
         </td>
         <td>
-            {{ v.request.get_format_display }}
+            <a href="{% url 'festival:voice_create' request_id=request.request.id %}">Голосовать</a>
         </td>
-        <td>
-            {{ v.request. }}
-        </td>
-        <!-- <td>
-            <a href="{% url voice_create request_id=v.id %}">Голосовать</a>
-        </td> -->
         <td></td>
     </tr>
-
     {% endfor %}    
 </table>
 

@@ -26,7 +26,7 @@ class Request(models.Model):
         max_length=1,
         choices=FORMATS
     )
-    desired_scene = models.ForeignKey(Scene, on_delete=models.CASCADE, verbose_name="Желаемая сцена")
+    scene = models.ForeignKey(Scene, on_delete=models.CASCADE, verbose_name="Желаемая сцена")
     comment = models.TextField('Комментарий/Пожелания', blank=True, null=True)
 
     class Meta:
