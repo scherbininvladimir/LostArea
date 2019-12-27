@@ -86,17 +86,17 @@ class RequestStatus(PermissionRequiredMixin, DetailView):
             context["username"] = self.request.user.username
         return context
 
-# class VoteView(FormView):
-#     template_name = 'voice-form.html'
-#     model = models.Voice
-#     form_class = forms.VoteForm
+class VoteView(FormView):
+    template_name = 'voice-form.html'
+    model = models.Voice
+    form_class = forms.VoteForm
 
-#     def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):
 
-# # TODO Разрешить только цензорам
+# TODO Разрешить только цензорам
 
-#         context = super().get_context_data(**kwargs)
-#         if self.request.user.is_authenticated:
-#             context["username"] = self.request.user.username
-#             context["ID"] = self.kwargs['request_id']
-#         return context
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context["username"] = self.request.user.username
+            context["ID"] = self.kwargs['request_id']
+        return context
