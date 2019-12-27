@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <h1>Голосование</h1>
+    <p>Вывести сюда содержимое заявки: </p>
+    <p>будем редактировать Запрос с ID {{ ID }}</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Сохранить">
+    </form>
+{% endblock %}

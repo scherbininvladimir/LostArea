@@ -4,6 +4,31 @@
 
 {% block content %}
 
-<h1>Тут будет список всех запросов для работы цензоров</h1>
+<table>
+    <tr>
+        <th>Название</th>
+        <th>Формат</th>
+        <th>Сцена</th>
+        <th>Временной слот</th>
+    </tr>
+    {% for v in object_list %}
+    <tr>
+        <td>
+            {{ v.request.name }}
+        </td>
+        <td>
+            {{ v.request.get_format_display }}
+        </td>
+        <td>
+            {{ v.request. }}
+        </td>
+        <!-- <td>
+            <a href="{% url voice_create request_id=v.id %}">Голосовать</a>
+        </td> -->
+        <td></td>
+    </tr>
+
+    {% endfor %}    
+</table>
 
 {% endblock %}

@@ -42,7 +42,7 @@ class Voice(models.Model):
     )
     censor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, verbose_name="Цензор")
     voice = models.CharField('Решение цензора',
-        max_length=2,
+        max_length=3,
         choices=VOICES)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, verbose_name="Заявка")
 

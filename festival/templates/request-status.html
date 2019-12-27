@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+    <h1>Тут ифнормация о статусе заявки</h1>
+    {{ object.name }}
+    {{ object.owner }}
+{% endblock %}

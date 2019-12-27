@@ -1,12 +1,14 @@
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormView
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
 
 from users.models import UserProfile
-from festival import models
+from festival import models, forms
 
 
 class Index(TemplateView):
@@ -20,7 +22,7 @@ class Index(TemplateView):
 
 class ManageRequests(ListView):
     template_name = 'manage-requests.html'
-    model = models.Request
+    model = models.Voice
 
     def dispatch(self, request, *args, **kwargs):  
         if self.request.user.is_anonymous:  
@@ -42,11 +44,11 @@ class RequestView(CreateView):
     fields = ['name', 'text', 'format', 'desired_scene', 'comment']
 
     def dispatch(self, request, *args, **kwargs):  
-
-# TODO Если заявка уже создана, показать ее.
-
         if self.request.user.is_anonymous:  
             return HttpResponseRedirect(reverse_lazy('users:login'))  
+        r = models.Request.objects.filter(owner=UserProfile.objects.filter(user=self.request.user).first()).first()
+        if r:
+            return HttpResponseRedirect(reverse_lazy('festival:request_status', args=[r.id]))
         return super(RequestView, self).dispatch(request, *args, **kwargs)  
 
     def get_context_data(self, **kwargs):
@@ -62,4 +64,39 @@ class RequestView(CreateView):
         return super(RequestView, self).form_valid(form)
 
 
+class RequestStatus(PermissionRequiredMixin, DetailView):
+    model = models.Request
+    template_name = 'request-status.html'
 
+
+    def has_permission(self):
+        r = models.Request.objects.values('id').filter(owner=UserProfile.objects.get(user=self.request.user)).first()
+        if r['id'] == self.kwargs['pk']:
+            return True
+        return False
+
+    def dispatch(self, request, *args, **kwargs):  
+        if self.request.user.is_anonymous:  
+            return HttpResponseRedirect(reverse_lazy('users:login'))  
+        return super(RequestStatus, self).dispatch(request, *args, **kwargs)  
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context["username"] = self.request.user.username
+        return context
+
+# class VoteView(FormView):
+#     template_name = 'voice-form.html'
+#     model = models.Voice
+#     form_class = forms.VoteForm
+
+#     def get_context_data(self, **kwargs):
+
+# # TODO Разрешить только цензорам
+
+#         context = super().get_context_data(**kwargs)
+#         if self.request.user.is_authenticated:
+#             context["username"] = self.request.user.username
+#             context["ID"] = self.kwargs['request_id']
+#         return context
