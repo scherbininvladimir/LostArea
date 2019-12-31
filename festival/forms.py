@@ -1,8 +1,9 @@
 from django import forms
-from festival.models import Voice
+from festival.models import Voice, Request
 
 class VoteForm(forms.ModelForm):
 
     class Meta:
         model = Voice
-        fields = '__all__'
+        # voice = forms.CharField()
+        fields = ['voice']

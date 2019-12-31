@@ -3,28 +3,69 @@
 {% block title %}Заявка на участие{% endblock %}
 
 {% block content %}
+<h2>Заявки на рассмотрении</h2>
 <table>
     <tr>
         <th>Название</th>
         <th>Формат</th>
-        <th>Сцена</th>
+        <th>Заявитель</th>
+        <th>Желаемая сцена</th>
+        <th>Желаемое время выступления</th>
+        <th>Результаты голосования цензоров</th>
     </tr>
     
     {% for request in object_list %}
     <tr>
         <td>
-            {{ request.request.name }}
-        </td>
-        <td>{{ request.request.get_format_display }}</td>
-        <td>
-            {{ request.request.scene }}
+            <a href="{% url 'festival:voice_create' request_id=request.id %}">{{ request.name }}</a>
         </td>
         <td>
-            <a href="{% url 'festival:voice_create' request_id=request.request.id %}">Голосовать</a>
+            <a href="{% url 'festival:voice_create' request_id=request.id %}">{{ request.get_format_display }}</a>
         </td>
-        <td></td>
+        <td>
+            <a href="{% url 'festival:voice_create' request_id=request.id %}">{{ request.owner }}</a>
+        </td>
+        
+        <td>
+            <a href="{% url 'festival:voice_create' request_id=request.id %}">
+
+            {% for voice in request.voice_set.all %}
+                <p>{{ voice.censor }} - {{ voice.get_voice_display }}</p>
+            {% endfor %}
+        </a>
+        </td>
+        <td>
+            <form action="/change_status/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{request.id}}" />
+                <input type="hidden" name="status" value="1" />
+                
+                <select name="timeslot">
+                    {% for ts in avalable_time_slots %}
+                        <option value="{{ts.id}}">{{ ts.scene }} - {{ ts.timeslot }}</option>
+                    {% endfor %}                
+                </select>
+                <input class="btn btn-outline-light" type="submit" value="Утвердить" />
+            </form>
+            <form action="/change_status/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{request.id}}" />
+                <input type="hidden" name="status" value="0"/>
+                <input class="btn btn-outline-light" type="submit" value="Отказать в участии" />
+            </form>
+        </td>
     </tr>
     {% endfor %}    
 </table>
 
+<h2>Утвержденные заявки</h2>
+
+<h2>Доступные временные слоты</h2>
+<table>
+    <tr>
+        <th>Сцена</th>
+        <th>Временной слот</th>
+        <th>Свободные окна</th>
+    </tr>
+</table>
 {% endblock %}

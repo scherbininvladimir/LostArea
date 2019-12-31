@@ -6,4 +6,14 @@
     <h1>Тут ифнормация о статусе заявки</h1>
     {{ object.name }}
     {{ object.owner }}
+
+
+    <form action="/change_status/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{request.id}}" />
+        <input name="status" value="0"/>
+        <input class="btn btn-outline-light" type="submit" value="Отказать в участии" />
+    </form>
+
+
 {% endblock %}

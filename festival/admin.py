@@ -13,8 +13,11 @@ class RequestAdmin(admin.ModelAdmin):
 
 
 @admin.register(Voice)  
-class VoiceAdmin(admin.ModelAdmin):  
-    pass
+class VoiceAdmin(admin.ModelAdmin):
+    list_display = ('request_name', 'censor', 'voice')
+
+    def request_name(self, obj):
+        return obj.request.name
 
 
 @admin.register(TimeSlot)  
@@ -24,5 +27,6 @@ class TimeSlotAdmin(admin.ModelAdmin):
 
 @admin.register(SceneSlot)  
 class SceneSlotAdmin(admin.ModelAdmin):  
-    pass
+    list_display = ('scene', 'timeslot', 'count')
+    
 
