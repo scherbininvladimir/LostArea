@@ -3,6 +3,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, FormView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -35,7 +36,55 @@ class ManageRequests(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['username'] = self.request.user.username
-        context['avalable_time_slots'] = models.SceneSlot.objects.all()
+        requests_db_entries = models.Request.objects.all()
+        requests = []
+        for r in requests_db_entries:
+            censor_voices = []
+            for v in r.voice_set.all():
+                censor_voices.append(v.censor.user.first_name + " " + v.censor.user.last_name + " (" + v.censor.user.username + ") - " + v.get_voice_display())
+            scene = ""
+            timeslot = ""
+            if r.scene_slot:
+                scene = r.scene_slot.scene
+                timeslot = r.scene_slot.timeslot
+            censors_count = User.objects.filter(groups__name='Кураторы').count()
+            all_voices = r.voice_set.count()
+            approve_voices = r.voice_set.filter(voice='YES').count()
+            reject_voices = r.voice_set.filter(voice='NO').count()
+            if (approve_voices - reject_voices > 2) or (all_voices == censors_count and approve_voices > reject_voices):
+                allow_approve_button = True
+            else:
+                allow_approve_button = False
+            if (reject_voices > 4) or (all_voices == censors_count and approve_voices <= reject_voices):
+                allow_reject_button = True
+            else:
+                allow_reject_button = False
+            requests.append({
+                'status': r.status,
+                'name': r.name,
+                'format': r.get_format_display(),
+                'scene': scene, 
+                'timeslot': timeslot, 
+                'owner': r.owner.user.first_name + " " + r.owner.user.last_name + " (" + r.owner.user.username + ")",
+                'desired_scene': r.desired_scene,
+                'desired_timeslot': r.desired_timeslot,
+                'censor_voices': censor_voices,
+                'id': r.id,
+                'allow_reject_button': allow_reject_button,
+                'allow_approve_button': allow_approve_button,
+            })
+        context['requests'] = requests
+        scene_slots = models.SceneSlot.objects.all()
+        avalable_time_slots = []
+        for ss in scene_slots:
+            if ss.count - models.Request.objects.filter(scene_slot=ss).count():
+                avalable_time_slots.append({
+                    'id': ss.id,
+                    'scene': ss.scene.name, 
+                    'timeslot': ss.timeslot.get_day_display() + ' - ' + ss.timeslot.get_time_display(), 
+                    'count': ss.count - models.Request.objects.filter(scene_slot=ss).count()
+                })
+        context['avalable_time_slots'] = avalable_time_slots
         return context
 
 
@@ -121,7 +170,6 @@ def change_status(request):
         request_id = request.POST['id']
         status = request.POST['status']
         scene_slot_id = request.POST.get('timeslot', False)
-
         if not (request.user.has_perm('festival.change_request') and request_id and status):
             return redirect('/requests')
         else:
@@ -129,11 +177,17 @@ def change_status(request):
             if not r:
                 return redirect('/requests')
             else:
-                r.scene_slot = None
-                if scene_slot_id:
-                    r.scene_slot = models.SceneSlot.objects.get(id=scene_slot_id)
-                r.status = status
-                r.save()
-        return redirect('/requests')
-    else:
-        return redirect('/requests')
+                censors_count = User.objects.filter(groups__name='Кураторы').count()
+                all_voices = r.voice_set.count()
+                approve_voices = r.voice_set.filter(voice='YES').count()
+                reject_voices = r.voice_set.filter(voice='NO').count()
+                if (approve_voices - reject_voices > 2) or (all_voices == censors_count and approve_voices > reject_voices):
+                    if scene_slot_id:
+                        r.scene_slot = models.SceneSlot.objects.get(id=scene_slot_id)
+                        r.status = status
+                        r.save()
+                if (reject_voices > 4) or (all_voices == censors_count and approve_voices <= reject_voices):
+                    r.scene_slot = None
+                    r.status = status
+                    r.save()
+    return redirect('/requests')
