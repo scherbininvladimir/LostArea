@@ -4,5 +4,25 @@
 
 {% block content %}
     <h1>Глухие урочища</h1>
-    <p>Текст главной странце. Ссылки на то, как добраться.</p>
+    <h2>Расписание фестиваля</h2>
+    {% for day, time in schedule.items %}
+    <h3>
+        {{ day }}
+    </h3>
+        {% for time, scene in time.items %}
+        <h4>
+            {{ time }}
+        </h4>
+            {% for scene, items in scene.items %}
+                <h5>
+                    {{ scene }}
+                </h5>
+                {% for i in items %}
+                    <h6>
+                        {{ i.name }}
+                    </h6>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
 {% endblock %}

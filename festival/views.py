@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
+from collections import OrderedDict
 
 from users.models import UserProfile
 from festival import models, forms
@@ -19,6 +20,21 @@ class Index(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context["username"] = self.request.user.username
+        slots = models.SceneSlot.objects.all().order_by('timeslot__day', 'timeslot__time', 'scene')
+        schedule = OrderedDict()
+        for slot in slots:
+            day = slot.timeslot.get_day_display()
+            time = slot.timeslot.get_time_display()
+            scene = slot.scene.name
+            items_list = slot.request_set.all()
+            if not schedule.get(day, False):
+                schedule[day] = OrderedDict()
+            if not schedule[day].get(time, False):
+                schedule[day][time] = OrderedDict()
+            if not schedule[day][time].get(scene, False):
+                schedule[day][time][scene] = OrderedDict()
+            schedule[day][time][scene] = slot.request_set.all()
+        context['schedule'] = schedule
         return context
 
 
