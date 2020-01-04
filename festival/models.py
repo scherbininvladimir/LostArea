@@ -88,4 +88,3 @@ class Voice(models.Model):
     class Meta:
         verbose_name = 'Решение цензора'
         verbose_name_plural = 'Решения цензоров'
-

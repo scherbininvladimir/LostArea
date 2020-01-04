@@ -3,17 +3,20 @@
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-    <h1>Тут ифнормация о статусе заявки</h1>
-    {{ object.name }}
-    {{ object.owner }}
-
-
-    <form action="/change_status/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{request.id}}" />
-        <input name="status" value="0"/>
-        <input class="btn btn-outline-light" type="submit" value="Отказать в участии" />
-    </form>
-
-
+    <h1>Информация о статусе заявки: {{ object.name }}</h1>
+    <br><br>
+    {% if object.status == True %}
+        <h3>Заявка утверждена</h3>
+        <br>
+        <p><b>Сцена: </b>{{ object.scene_slot.scene.name }}</p>
+        <p><b>Время выступления: </b>{{ object.scene_slot.timeslot }}</p>
+    {% elif object.status == False %}
+        <h3>Заявка отклонена</h3>
+    {% else %}
+        <h3>Заявка в процессе обсуждения кураторами</h3>
+        <br>
+        {% for v in object.voice_set.all %}
+            <p>{{v.censor.user.first_name}} {{v.censor.user.last_name}} ({{ v.censor }}) - {{ v.get_voice_display }}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

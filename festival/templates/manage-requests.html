@@ -47,7 +47,7 @@
                             <option value="{{ts.id}}">{{ ts.scene }} - {{ ts.timeslot }}</option>
                         {% endfor %}                
                     </select>
-                    <input class="btn btn-outline-light" type="submit" value="Добавить в программу" />
+                    <input class="button" type="submit" value="Добавить в программу" />
                 </form>
                 {% endif %}
                 {% if request.allow_reject_button %}
@@ -55,7 +55,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="id" value="{{request.id}}" />
                     <input type="hidden" name="status" value="0"/>
-                    <input class="btn btn-outline-light" type="submit" value="Отказать в участии" />
+                    <input class="button" type="submit" value="Отказать в участии" />
                 </form>
                 {% endif %}
             </td>

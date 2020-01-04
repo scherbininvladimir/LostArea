@@ -168,7 +168,7 @@ class VoteView(PermissionRequiredMixin, FormView):
     def get_form(self, form_class=forms.VoteForm):
         
         try:
-            voice = models.Voice.objects.get(censor=UserProfile.objects.get(user=self.request.user), request=models.Request.objects.get(pk=self.kwargs['request_id']))
+            voice = models.Voice.objects.get(censor__user=self.request.user, request__pk=self.kwargs['request_id'])
             return form_class(instance=voice, **self.get_form_kwargs())
         except models.Voice.DoesNotExist:
             return form_class(**self.get_form_kwargs())
