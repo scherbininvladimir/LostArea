@@ -4,25 +4,34 @@
 
 {% block content %}
     <h1>Глухие урочища</h1>
+    <br><br>
     <h2>Расписание фестиваля</h2>
+    <table class="tbl table">
+    
+    <tr>
     {% for day, time in schedule.items %}
-    <h3>
-        {{ day }}
-    </h3>
-        {% for time, scene in time.items %}
-        <h4>
-            {{ time }}
-        </h4>
-            {% for scene, items in scene.items %}
-                <h5>
-                    {{ scene }}
-                </h5>
-                {% for i in items %}
-                    <h6>
-                        {{ i.name }}
-                    </h6>
-                {% endfor %}
+        <td>
+            <h3>
+                {{ day }}
+            </h3>
+        
+            <table>
+            {% for time, scene in time.items %}
+                <tr>
+                    <td>
+                        <h4>{{ time }}</h4>
+                        {% for scene, items in scene.items %}
+                                <p><b>{{scene}}</b></p>
+                                {% for i in items %}
+                                <p>{{i.name}}</p>
+                                {% endfor %}
+                        {% endfor %}
+                    </td>     
+                </tr>
             {% endfor %}
-        {% endfor %}
+            </table>
+        </td>
     {% endfor %}
+    </tr>
+</table>
 {% endblock %}

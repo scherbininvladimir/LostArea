@@ -8,20 +8,38 @@
     <title>Глухие урочища &mdash; {% block title %}{% endblock %}</title>
 </head>
 <body>
-    {% if username %}  
-        <h1>Привет, {{ username }}!</h1>  
-        <p><a href="/logout">Выход</a></p>  
-    {% else %}  
-        <p><a href="/login">Вход для музыкантов и персонала</a></p>  
-        <p><a href="/register">Регистрация музыкантов и групп</a></p>
-    {% endif %} 
 
-        <a href="/">Главная</a>
-        <a href="/admin">Админка</a>
-        <a href="/contacts">Контакты</a>
-        <a href="/address">Как добраться</a>
-        <p><a href="/request">Создать заявку</a></p>
-        <p><a href="/requests">Для автоматического перехода</a></p>
+    <nav class="navbar navbar-expand navbar-dark bg-primary">
+        
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Главна</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/contacts">Котакты</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/address">Как добраться</a>
+            </li>  
+          </ul>
+            <div class="text-white">
+            {% if username %}  
+                Вы зарегистрированы как {{ userrole }}, {{ username }}!
+                
+                {% if userrole == 'куратор' %}
+                    <a class="text-white" href="/requests">Администрировать заявки</a>
+                    {% else %}
+                    <a class="text-white" href="/request">Создать заявку / Посмотреть статус заявки</a>
+                {% endif %}
+                <a class="text-white" href="/logout">Выход</a>
+            {% else %}  
+                <a class="text-white" href="/login">Вход для музыкантов и персонала</a>
+                <a class="text-white" href="/register">Регистрация</a>
+            {% endif %}
+        </div>
+      </nav>
+    <br>
+    <br>
     <div class="container">
     {% block content %}
     {% endblock %}

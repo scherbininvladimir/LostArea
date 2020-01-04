@@ -20,6 +20,10 @@ class Index(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context["username"] = self.request.user.username
+            if self.request.user.groups.filter(name='Кураторы').exists():
+                context["userrole"] = "куратор"
+            else:
+                context["userrole"] = "музыкант"
         slots = models.SceneSlot.objects.all().order_by('timeslot__day', 'timeslot__time', 'scene')
         schedule = OrderedDict()
         for slot in slots:
@@ -35,6 +39,7 @@ class Index(TemplateView):
                 schedule[day][time][scene] = OrderedDict()
             schedule[day][time][scene] = slot.request_set.all()
         context['schedule'] = schedule
+        
         return context
 
 
@@ -52,6 +57,10 @@ class ManageRequests(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['username'] = self.request.user.username
+        if self.request.user.groups.filter(name='Кураторы').exists():
+            context["userrole"] = "куратор"
+        else:
+            context["userrole"] = "музыкант"
         requests_db_entries = models.Request.objects.all()
         requests = []
         for r in requests_db_entries:
@@ -122,6 +131,10 @@ class RequestView(CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context["username"] = self.request.user.username
+            if self.request.user.groups.filter(name='Кураторы').exists():
+                context["userrole"] = "куратор"
+            else:
+                context["userrole"] = "музыкант"
         return context
 
     def form_valid(self, form):  
@@ -150,6 +163,10 @@ class RequestStatus(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context["username"] = self.request.user.username
+            if self.request.user.groups.filter(name='Кураторы').exists():
+                context["userrole"] = "куратор"
+            else:
+                context["userrole"] = "музыкант"
         return context
 
 
@@ -163,6 +180,11 @@ class VoteView(PermissionRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['username'] = self.request.user.username
+            context['request'] = models.Request.objects.get(pk=self.kwargs['request_id'])
+            if self.request.user.groups.filter(name='Кураторы').exists():
+                context["userrole"] = "куратор"
+            else:
+                context["userrole"] = "музыкант"
         return context
     
     def get_form(self, form_class=forms.VoteForm):

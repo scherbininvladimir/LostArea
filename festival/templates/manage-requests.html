@@ -4,32 +4,21 @@
 
 {% block content %}
 <h2>Заявки на рассмотрении</h2>
-<table border="1">
+<table class="tbl table">
     <tr>
         <th>Название</th>
-        <th>Формат</th>
-        <th>Заявитель</th>
-        <th>Желаемая сцена</th>
-        <th>Желаемое время выступления</th>
+        
         <th>Результаты голосования цензоров</th>
     </tr>
     {% for request in requests %}
         {% if request.status == None %}
         <tr>
             <td>
-                {{ request.name }}
+                <a href="{% url 'festival:voice_create' request_id=request.id %}">
+                    {{ request.name }}
+                </a>
             </td>
-            <td>
-                {{ request.format }}</td>
-            <td>
-                {{ request.owner }}
-            </td>
-            <td>
-                {{ request.desired_scene }}
-            </td>
-            <td>
-                {{ request.desired_timeslot }}
-            </td>
+            
             <td>
                 {% for voice in request.censor_voices %}
                     {{ voice }}<br>
@@ -59,16 +48,13 @@
                 </form>
                 {% endif %}
             </td>
-            <td>
-                <a href="{% url 'festival:voice_create' request_id=request.id %}">Посмотреть завку / Проголосовать</a>
-            </td>
         </tr>
         {% endif %}
     {% endfor %}    
 </table>
 
 <h2>Утвержденные заявки</h2>
-    <table>
+    <table class="tbl table">
         <tr>
             <th>Название</th>
             <th>Формат</th>
@@ -97,7 +83,7 @@
 
 
 <h2>Доступные временные слоты</h2>
-<table>
+<table class="tbl table">
     <tr>
         <th>Сцена</th>
         <th>Временной слот</th>
